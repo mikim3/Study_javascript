@@ -37,9 +37,28 @@ console.log(x)
 // 값이 할당되지 않은 상태를 나타내는 undefined 값만을 위한 독립 자료형 undefined
 // 복잡한 자료구조를 저장하는 데 쓰이는 객체형과 고유한 식별자를 만들 때 사용되는 심볼형
 
+// (2^53 - 1) ㅂㅗ다 큰  값  혹은  -(2^53 - 1)보다 작은  값은
+// '숫자형'으로 표현 불가 그럴때 BigInt형 사용
+const bigInt = 1234567890123456789012345678901234567890n;
 
-typeof null == "object" // 언어 자체의 오류
+// 문자형 즉 string 이라 불리는 타입은 있지만 글자형 즉 char형은 없다. 문자형 한글자면 충분하다.
+
+typeof null == "object" // 언어 자체의 오류로 null을 object로 만들어 버렸다.
 typeof function(){} == "function" // 함수는 특별하게 취급됩니다.
+
+console.log(typeof undefined)  // "undefined"
+console.log(typeof 0) // "number"
+console.log(typeof 10n) //"bigint"
+console.log(typeof true )// boolean
+console.log(typeof "foo") // string
+console.log(typeof Symbol("id")) // "symbol"
+// Math는 수학 연산을 제공하는 내장 객체이므로 "object"가 출력됩니다.
+// Math에 대해선 숫자형 챕터에서 학습하도록 하겠습니다.
+// 내장 객체는 객체형이라는 것을 알려주기 위해 이런 예시를 작성해 보았습니다.
+console.log(typeof Math) // "object"
+// null이 사실 객체는 아니지만 하위 호환성을 유지하기 위해 이런 오류를 수정안함, 즉 그냥 예외로 기억하기
+console.log(typeof null) // "object"
+console.log(typeof console.log) // "object"
 
 
 ////////////////// 연산자
@@ -56,8 +75,13 @@ console.log(1 + '2'); // '12'
 
 // 바교연산자
 
+// 동등 연산자 ==는 형이 다른 값끼리 비교할 때 피연산자의 자료형을 숫자형으로 바꾼 후 비교를 진행합니다.
+// null과 undefined는 자기끼리 비교할 땐 참을 반환하지만 다른 자료형과 비교할 땐 거짓을 반환합니다.
 
+console.log( 0 == false ); // true
+console.log( 0 == '' ); // true
+console.log( 0 == '2' ); // false
 
-
+//일치 연산자 ===는 피연산자의 형을 변환하지 않습니다. 형이 다르면 무조건 다르다고 평가합니다.
 
 
