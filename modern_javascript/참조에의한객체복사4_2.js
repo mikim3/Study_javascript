@@ -1,3 +1,4 @@
+'use strict';
 
 // 자바스크립트에서는 아래와 같이 그냥 객체1 = 객체2로 하면 객체2,1이 같은 참조값을 갖게되고 객체는 복사되지 않는다.
 //  객체가 할당된 변수를 복사할 땐 객체의 참조 값이 복사되고 객체는 복사되지 않습니다.
@@ -93,8 +94,6 @@ console.log("---------------------중첩객체복사---------------------")
 // 지금까진 user의 모든 프로퍼티가 원시값인 경우만 가정했습니다.
 // 그런데 프로퍼티는 다른 객체에 대한 참조 값일 수도 있습니다. 이 경우는 어떻게 해야 할까요?
 
-
-
 let user4 = {
     name: "John",
     sizes: {
@@ -102,28 +101,24 @@ let user4 = {
       width: 50
     }
 };
-
 console.log( user4.sizes.height ); // 182
 
+// 중첩객체 복사는  assign으로 처리 안됨
 let user5 = {
     name: "John",
     sizes: {
       height: 182,
       width: 50
     }
-  };
-
-use FileSystemDirectoryHandle;
+};
 
 let clone2 = Object.assign({}, user5);
 
-console.log( user.sizes === clone2.sizes ); // true, 같은 객체입니다.
+console.log( user5.sizes === clone2.sizes ); // true, 같은 객체입니다.
 
 // user와 clone는 sizes를 공유합니다.
 user5.sizes.width++;       // 한 객체에서 프로퍼티를 변경합니다.
 console.log(clone2.sizes.width); // 51, 다른 객체에서 변경 사항을 확인할 수 있습니다.
-
-
 
 // 이 문제를 해결하려면 user[key]의 각 값을 검사하면서, 그 값이 객체인 경우
 // 객체의 구조도 복사해주는 반복문을 사용해야 합니다. 이런 방식을 '깊은 복사(deep cloning)'라고 합니다.
@@ -131,8 +126,6 @@ console.log(clone2.sizes.width); // 51, 다른 객체에서 변경 사항을 확
 // 위 사례를 비롯한 다양한 상황에서 객체를 복제할 수 있습니다.
 // 자바스크립트 라이브러리 lodash의 메서드인 _.cloneDeep(obj)을 사용하면
 // 이 알고리즘을 직접 구현하지 않고도 깊은 복사를 처리할 수 있으므로 참고하시기 바랍니다.
-
-
 
 
 

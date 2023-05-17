@@ -274,16 +274,3 @@ for (key in salaries)
     sum += salaries[key];
 console.log((sum))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
