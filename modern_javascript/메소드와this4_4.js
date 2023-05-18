@@ -149,3 +149,55 @@ function makeUser() {
 let user = makeUser();
 
 console.log( user.ref().name ); // JohnSina
+
+
+
+
+
+
+
+//////////////////////////
+
+
+let user20 = { 
+  name: "John" ,
+  user21 : {
+    name :"mikim3",
+    sayHi2 : function () {
+      console.log("sayHi2 arrow")
+      let arrow = () => console.log(this.name);
+      arrow();
+      console.log("sayHi2 normal")
+      console.log(this.name)
+    }
+  },
+};
+let admin20 = { name: "Admin" };
+
+function sayHi() {
+  console.log( this.name );
+}
+
+// function sayHi2() {
+//   let user21 = {name: "mikim3"};
+//   sayHi();  
+//   console.log("hhh" + this.name );
+// }
+
+// 별개의 객체에서 동일한 함수를 사용함
+user20.f = sayHi;
+admin20.f = sayHi;
+user20.user21.f = sayHi;
+
+// 'this'는 '점(.) 앞의' 객체를 참조하기 때문에
+// this 값이 달라짐
+user20.f(); // John  (this == user)
+admin20.f(); // Admin  (this == admin)
+console.log("ggogo")
+user20.user21.f();
+console.log("ggogosss")
+user20.user21.sayHi2();
+
+console.log(this.name);
+
+admin20['f'](); // Admin (점과 대괄호는 동일하게 동작함)

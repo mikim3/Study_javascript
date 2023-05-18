@@ -1,5 +1,5 @@
-var kim = {name: 'kim', first:10, second:22}
-var lee = {name: 'lee', first:10, second:15}
+let kim = {name: 'kim', first:10, second:22}
+let lee = {name: 'lee', first:10, second:15}
 function sum() {
     return this.first + this.second;
 }
@@ -13,6 +13,19 @@ function sum2(prefix) {
 console.log("sum.call(kim)", sum.call(kim));
 console.log("sum.call(lee)", sum.call(lee));
 
+//////////////////////////
+/// 유사 배열 객체
+
+// 
+function sum3() {
+    return arguments[0].first + arguments[1].second
+}
+
+console.log("just sum", sum3(kim));
+
+
+console.log("sum.call(lee)", sum(kim));
+
 console.log("sum2.call(kim)", sum2.call(kim, '=> '));
 console.log("sum2.call(lee)", sum2.call(lee, ': '));
 
@@ -23,7 +36,7 @@ console.log("sum2.call(lee)", sum2.call(lee, ': '));
 // bind는 완전바꿔서 고정해서 그 함수를 반환
 
 // sum2가 바뀐게 아니라 sum2에서 bind에 맞게 바뀐 값이 반환된다.
-var kimSum = sum2.bind(kim, '-> ');
+let kimSum = sum2.bind(kim, '-> ');
 console.log("kimSum", kimSum());
 
 
