@@ -32,13 +32,10 @@
 
 // user = new User(""); // 이름이 너무 짧습니다.
 
-
 class User {
-
     ['say' + 'Hi']() {
       console.log("Hello");
     }
-  
-  }
+}
   
 new User().sayHi();
