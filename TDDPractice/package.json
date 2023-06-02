@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "react-scripts": "^2.1.8",
+    "react-testing-library": "^8.0.1"
+  },
+  "scripts": {
+    "test": "react-scripts test"
+  },
+  "name": "tddpractice",
+  "version": "1.0.0",
+  "main": "Counter.js",
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
