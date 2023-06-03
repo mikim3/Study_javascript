@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+
+    /* Language and Environment */
+    "target": "ES5",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+
+    /* Modules */
+    "module": "commonjs",                                /* Specify what module code is generated. */
+  
+    /* Type Checking */
+    "strictNullChecks": true,                         /* When type checking, take into account 'null' and 'undefined'. */
+
+    /* Completeness */
+    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+  }
+}
