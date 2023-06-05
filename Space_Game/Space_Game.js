@@ -122,7 +122,7 @@ window.addEventListener('keydown', (event) => {
 let assets = {};
 const canvas = document.getElementById("myCanvas");
 ctx = canvas.getContext("2d");
-const ENEMY_TOTAL = 5;
+const ENEMY_TOTAL = 6;
 const ENEMY_WIDTH = ENEMY_TOTAL * 98;
 let hero = {};
 let enemyArray = [];
@@ -174,6 +174,7 @@ function deadManager() {
 
 function deadChecker() {
   enemyArray.forEach((enemy, idx) => {
+    // 죽는거 판정
     if (intersectRect(hero.rectFromGameObject(), enemy.rectFromGameObject())) {
       clearInterval(gameId);
       if (confirm("game over"))
@@ -234,7 +235,7 @@ function createEnemy(x, y) {
     x,
     y,
     point: 42,
-    speed: 1,
+    speed: 1.5,
     type: 'Enemy'
   }
   enemy.img = assets.enemyImage;
@@ -266,6 +267,7 @@ async function loadAssets() {
   }
 }
 
+// 교차여부확인
 function intersectRect(r1, r2) {
   return !(r2.left > r1.right ||
     r2.right < r1.left ||
