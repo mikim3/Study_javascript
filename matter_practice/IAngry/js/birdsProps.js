@@ -2,7 +2,7 @@ const getRandomBird = () => {
 
     const birds = [
         {
-            name: 'Terence',
+            name: 'Pigeon',
             radius: 30,
             posX: 300,
             posY: 400,
