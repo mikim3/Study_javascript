@@ -1,10 +1,13 @@
+
+// Example 객체가 이미 존재한다면 그대로 사용하고, 아니라면 빈 객체를 생성
+// 이렇게 함으로써 Example 객체가 이미 다른 곳에서 정의되었을 경우에도 코드 충돌을 방지할 수 있음
 var Example = Example || {};
 
-console.log("hhsehksoeh");
-
+// 시뮬레이션을 생성하고 시간의 흐름을 조절
 Example.timescale = function() {
-    console.log("in timeScale");
-    var Engine = Matter.Engine,
+    // Matter.js의 여러 모듈을 변수에 할당합니다.
+    // 이렇게 함으로써 해당 모듈의 기능을 사용할 수 있습니다.
+    let Engine = Matter.Engine,
         Render = Matter.Render,
         Runner = Matter.Runner,
         Body = Matter.Body,
@@ -17,12 +20,16 @@ Example.timescale = function() {
         World = Matter.World,
         Bodies = Matter.Bodies;
 
+    // Matter.Engine.create() 함수를 사용하여 엔진을 생성합니다.
+    // Matter.Engine.create() 함수는 Matter.Engine 객체를 반환합니다.
+    // 생성한 엔진을 변수 engine에 할당하고, engine.world를 변수 world에 할당합니다.
+    // engine.world는 시뮬레이션에 필요한 객체들을 포함하는 컨테이너입니다.
     // create engine
-    var engine = Engine.create(),
+    let engine = Engine.create(),
         world = engine.world;
 
     // create renderer
-    var render = Render.create({
+    let render = Render.create({
         element: document.body,
         engine: engine,
         options: {
@@ -35,7 +42,7 @@ Example.timescale = function() {
     Render.run(render);
 
     // create runner
-    var runner = Runner.create();
+    let runner = Runner.create();
     Runner.run(runner, engine);
 
     // add bodies
@@ -46,14 +53,14 @@ Example.timescale = function() {
         Bodies.rectangle(0, 300, 50, 600, { isStatic: true })
     ]);
 
-    var explosion = function(engine) {
-        var bodies = Composite.allBodies(engine.world);
+    let explosion = function(engine) {
+        let bodies = Composite.allBodies(engine.world);
 
-        for (var i = 0; i < bodies.length; i++) {
-            var body = bodies[i];
+        for (let i = 0; i < bodies.length; i++) {
+            let body = bodies[i];
 
             if (!body.isStatic && body.position.y >= 500) {
-                var forceMagnitude = 0.05 * body.mass;
+                let forceMagnitude = 0.05 * body.mass;
 
                 Body.applyForce(body, body.position, {
                     x: (forceMagnitude + Common.random() * forceMagnitude) * Common.choose([1, -1]),
@@ -63,7 +70,7 @@ Example.timescale = function() {
         }
     };
 
-    var timeScaleTarget = 1,
+    let timeScaleTarget = 1,
         counter = 0;
 
 
