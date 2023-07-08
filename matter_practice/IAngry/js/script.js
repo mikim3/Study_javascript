@@ -1,6 +1,7 @@
 // Matter modules
 // Matter.js 모듈을 가져옵니다.
-const { Render, Runner, Engine, Bodies, Composite, Composites, Constraint, Mouse, MouseConstraint, Events, Body } = Matter;
+const { Render,
+    Runner, Engine, Bodies, Composite, Composites, Constraint, Mouse, MouseConstraint, Events, Body } = Matter;
 
 // Bird specs
 // getRandomBird() 함수를 사용하여 새의 사양을 가져옵니다.

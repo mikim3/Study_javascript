@@ -87,7 +87,6 @@ Example.timescale = function() {
     let timeScaleTarget = 1,
         counter = 0;
 
-
     // 업데이트 이벤트가 발생한 후에 실행되는 콜백 함수를 등록합니다.
     // 콜백 함수는 시간 비율을 조절하고 일정 주기마다 폭발 효과를 생성합니다.
     Events.on(engine, 'afterUpdate', function(event) {
@@ -111,7 +110,6 @@ Example.timescale = function() {
         }
     });
 
-
     // 바디에 적용될 옵션을 설정합니다.
     // 여기서는 마찰력과 반발력을 조정합니다.
     let bodyOptions = {
@@ -119,7 +117,6 @@ Example.timescale = function() {
         friction: 0.0001,
         restitution: 0.8
     };
-
 
     // Matter.Composites.stack() 함수를 사용하여 월드에 원형 바디들을 추가합니다.
     // stack() 함수는 주어진 범위 내에서 바디들을 격자 형태로 쌓아서 반환합니다.
@@ -170,8 +167,9 @@ Example.timescale = function() {
         min: { x: 0, y: 0 },
         max: { x: 800, y: 600 }
     });
-
-    // context for MatterTools.Demo
+    
+    // Example.timescale 함수가 반환하는 객체를 생성하여 반환합니다.
+    // 이 객체는 생성한 엔진, 러너, 렌더러 등을 포함하고 있으며, 시뮬레이션을 멈추는 함수도 제공합니다.
     return {
         engine: engine,
         runner: runner,
