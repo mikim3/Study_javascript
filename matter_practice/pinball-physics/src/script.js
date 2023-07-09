@@ -43,19 +43,20 @@
 		createEvents();
 	}
 
+	// 게임 초기화 함수
 	function init() {
-		// engine (shared)
+		// Matter.js 엔진 생성
 		engine = Matter.Engine.create();
 
-		// world (shared)
+		// Matter.js 월드 생성
 		world = engine.world;
 		world.bounds = {
 			min: { x: 0, y: 0},
 			max: { x: 500, y: 800 }
 		};
-		world.gravity.y = GRAVITY; // simulate rolling on a slanted table
+		world.gravity.y = GRAVITY; // 경사진 테이블에서 공을 굴리기 위한 중력 설정
 
-		// render (shared)
+		// Matter.js 렌더러 생성
 		render = Matter.Render.create({
 			element: $('.container')[0],
 			engine: engine,
@@ -68,86 +69,88 @@
 		});
 		Matter.Render.run(render);
 
-		// runner
+		// Matter.js 실행
 		let runner = Matter.Runner.create();
 		Matter.Runner.run(runner, engine);
 
-		// used for collision filtering on various bodies
+		// 충돌 필터링을 위한 그룹 설정
 		stopperGroup = Matter.Body.nextGroup(true);
 
-		// starting values
+		// 초기 점수 설정
 		currentScore = 0;
 		highScore = 0;
 		isLeftPaddleUp = false;
 		isRightPaddleUp = false;
 	}
 
+	// 정적 바디 생성
 	function createStaticBodies() {
 		Matter.World.add(world, [
-			// table boundaries (top, bottom, left, right)
+			// 테이블 경계 (위, 아래, 왼쪽, 오른쪽)
 			boundary(250, -30, 500, 100),
 			boundary(250, 830, 500, 100),
 			boundary(-30, 400, 100, 800),
 			boundary(530, 400, 100, 800),
 
-			// dome
+			// 돔
 			path(239, 86, PATHS.DOME),
 
-			// pegs (left, mid, right)
+			// 핀볼을 반사시키는 장애물 (왼쪽, 중간, 오른쪽)
 			wall(140, 140, 20, 40, COLOR.INNER),
 			wall(225, 140, 20, 40, COLOR.INNER),
 			wall(310, 140, 20, 40, COLOR.INNER),
 
-			// top bumpers (left, mid, right)
+			// 상단 범퍼 (왼쪽, 중간, 오른쪽)
 			bumper(105, 250),
 			bumper(225, 250),
 			bumper(345, 250),
 
-			// bottom bumpers (left, right)
+			// 하단 범퍼 (왼쪽, 오른쪽)
 			bumper(165, 340),
 			bumper(285, 340),
 
-			// shooter lane wall
+			// 슈터 레인 벽
 			wall(440, 520, 20, 560, COLOR.OUTER),
 
-			// drops (left, right)
+			// 드롭 (왼쪽, 오른쪽)
 			path(25, 360, PATHS.DROP_LEFT),
 			path(425, 360, PATHS.DROP_RIGHT),
 
-			// slingshots (left, right)
+			// 슬링샷 (왼쪽, 오른쪽)
 			wall(120, 510, 20, 120, COLOR.INNER),
 			wall(330, 510, 20, 120, COLOR.INNER),
 
-			// out lane walls (left, right)
+			// 아웃 레인 벽 (왼쪽, 오른쪽)
 			wall(60, 529, 20, 160, COLOR.INNER),
 			wall(390, 529, 20, 160, COLOR.INNER),
 
-			// flipper walls (left, right);
+			// 플리퍼 벽 (왼쪽, 오른쪽)
 			wall(93, 624, 20, 98, COLOR.INNER, -0.96),
 			wall(357, 624, 20, 98, COLOR.INNER, 0.96),
 
-			// aprons (left, right)
+			// 애프런 (왼쪽, 오른쪽)
 			path(79, 740, PATHS.APRON_LEFT),
 			path(371, 740, PATHS.APRON_RIGHT),
 
-			// reset zones (center, right)
+			// 재시작 영역 (가운데, 오른쪽)
 			reset(225, 50),
 			reset(465, 30)
 		]);
 	}
 
+	// 패들 생성
 	function createPaddles() {
-		// these bodies keep paddle swings contained, but allow the ball to pass through
+		// 이 패들은 핀볼 튕김을 제한하지만 핀볼은 통과할 수 있도록 함
 		leftUpStopper = stopper(160, 591, 'left', 'up');
 		leftDownStopper = stopper(140, 743, 'left', 'down');
 		rightUpStopper = stopper(290, 591, 'right', 'up');
 		rightDownStopper = stopper(310, 743, 'right', 'down');
 		Matter.World.add(world, [leftUpStopper, leftDownStopper, rightUpStopper, rightDownStopper]);
 
-		// this group lets paddle pieces overlap each other
+		// 패들 간에 서로 겹칠 수 있도록 하는 그룹 설정
 		let paddleGroup = Matter.Body.nextGroup(true);
 
-		// Left paddle mechanism
+		// 왼쪽 패들
 		let paddleLeft = {};
 		paddleLeft.paddle = Matter.Bodies.trapezoid(170, 660, 20, 80, 0.33, {
 			label: 'paddleLeft',
@@ -187,7 +190,7 @@
 		Matter.World.add(world, [paddleLeft.comp, paddleLeft.hinge, paddleLeft.con]);
 		Matter.Body.rotate(paddleLeft.comp, 0.57, { x: 142, y: 660 });
 
-		// right paddle mechanism
+		// 오른쪽 패들
 		let paddleRight = {};
 		paddleRight.paddle = Matter.Bodies.trapezoid(280, 660, 20, 80, 0.33, {
 			label: 'paddleRight',
@@ -228,8 +231,8 @@
 		Matter.Body.rotate(paddleRight.comp, -0.57, { x: 308, y: 660 });
 	}
 
+	// 핀볼 생성
 	function createPinball() {
-		// x/y are set to when pinball is launched
 		pinball = Matter.Bodies.circle(0, 0, 14, {
 			label: 'pinball',
 			collisionFilter: {
@@ -243,8 +246,9 @@
 		launchPinball();
 	}
 
+	// 이벤트 생성
 	function createEvents() {
-		// events for when the pinball hits stuff
+		// 핀볼이 물체에 닿았을 때의 이벤트 처리
 		Matter.Events.on(engine, 'collisionStart', function(event) {
 			let pairs = event.pairs;
 			pairs.forEach(function(pair) {
@@ -261,21 +265,21 @@
 			});
 		});
 
-		// regulate pinball
+		// 핀볼 조절
 		Matter.Events.on(engine, 'beforeUpdate', function(event) {
-			// bumpers can quickly multiply velocity, so keep that in check
+			// 범퍼로 인해 속도가 급격히 증가할 수 있으므로 제한
 			Matter.Body.setVelocity(pinball, {
 				x: Math.max(Math.min(pinball.velocity.x, MAX_VELOCITY), -MAX_VELOCITY),
 				y: Math.max(Math.min(pinball.velocity.y, MAX_VELOCITY), -MAX_VELOCITY),
 			});
 
-			// cheap way to keep ball from going back down the shooter lane
+			// 핀볼이 다시 슈터 레인으로 돌아가는 것을 방지하기 위한 처리
 			if (pinball.position.x > 450 && pinball.velocity.y > 0) {
 				Matter.Body.setVelocity(pinball, { x: 0, y: -10 });
 			}
 		});
 
-		// mouse drag (god mode for grabbing pinball)
+		// 핀볼을 잡기 위한 마우스 드래그 이벤트
 		Matter.World.add(world, Matter.MouseConstraint.create(engine, {
 			mouse: Matter.Mouse.create(render.canvas),
 			constraint: {
@@ -286,23 +290,23 @@
 			}
 		}));
 
-		// keyboard paddle events
+		// 키보드 패들 이벤트
 		$('body').on('keydown', function(e) {
-			if (e.which === 37) { // left arrow key
+			if (e.which === 37) { // 왼쪽 화살표 키
 				isLeftPaddleUp = true;
-			} else if (e.which === 39) { // right arrow key
+			} else if (e.which === 39) { // 오른쪽 화살표 키
 				isRightPaddleUp = true;
 			}
 		});
 		$('body').on('keyup', function(e) {
-			if (e.which === 37) { // left arrow key
+			if (e.which === 37) { // 왼쪽 화살표 키
 				isLeftPaddleUp = false;
-			} else if (e.which === 39) { // right arrow key
+			} else if (e.which === 39) { // 오른쪽 화살표 키
 				isRightPaddleUp = false;
 			}
 		});
 
-		// click/tap paddle events
+		// 클릭/터치 패들 이벤트
 		$('.left-trigger')
 			.on('mousedown touchstart', function(e) {
 				isLeftPaddleUp = true;
@@ -311,7 +315,7 @@
 				isLeftPaddleUp = false;
 			});
 		$('.right-trigger')
-		.on('mousedown touchstart', function(e) {
+			.on('mousedown touchstart', function(e) {
 				isRightPaddleUp = true;
 			})
 			.on('mouseup touchend', function(e) {
@@ -319,6 +323,7 @@
 			});
 	}
 
+	// 핀볼 발사
 	function launchPinball() {
 		updateScore(0);
 		Matter.Body.setPosition(pinball, { x: 465, y: 765 });
@@ -326,16 +331,18 @@
 		Matter.Body.setAngularVelocity(pinball, 0);
 	}
 
+	// 범퍼에 부딪혔을 때의 처리
 	function pingBumper(bumper) {
 		updateScore(currentScore + 10);
 
-		// flash color
+		// 색상 깜빡임
 		bumper.render.fillStyle = COLOR.BUMPER_LIT;
 		setTimeout(function() {
 			bumper.render.fillStyle = COLOR.BUMPER;
 		}, 100);
 	}
 
+	// 점수 업데이트
 	function updateScore(newCurrentScore) {
 		currentScore = newCurrentScore;
 		$currentScore.text(currentScore);
@@ -344,12 +351,12 @@
 		$highScore.text(highScore);
 	}
 
-	// matter.js has a built in random range function, but it is deterministic
+	// 범위 내의 랜덤한 숫자 생성
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
 	}
 
-	// outer edges of pinball table
+	// 핀볼 테이블의 외부 경계
 	function boundary(x, y, width, height) {
 		return Matter.Bodies.rectangle(x, y, width, height, {
 			isStatic: true,
@@ -359,7 +366,7 @@
 		});
 	}
 
-	// wall segments
+	// 벽 세그먼트
 	function wall(x, y, width, height, color, angle = 0) {
 		return Matter.Bodies.rectangle(x, y, width, height, {
 			angle: angle,
@@ -371,7 +378,7 @@
 		});
 	}
 
-	// bodies created from SVG paths
+	// SVG 경로로부터 생성된 바디
 	function path(x, y, path) {
 		let vertices = Matter.Vertices.fromPath(path);
 		return Matter.Bodies.fromVertices(x, y, vertices, {
@@ -379,14 +386,14 @@
 			render: {
 				fillStyle: COLOR.OUTER,
 
-				// add stroke and line width to fill in slight gaps between fragments
+				// 빈 공간을 채우기 위해 스트로크와 선 두께 추가
 				strokeStyle: COLOR.OUTER,
 				lineWidth: 1
 			}
 		});
 	}
 
-	// round bodies that repel pinball
+	// 핀볼을 반사시키는 둥근 바디
 	function bumper(x, y) {
 		let bumper = Matter.Bodies.circle(x, y, 25, {
 			label: 'bumper',
@@ -396,15 +403,14 @@
 			}
 		});
 
-		// for some reason, restitution is reset unless it's set after body creation
+		// 반발력 설정
 		bumper.restitution = BUMPER_BOUNCE;
 
 		return bumper;
 	}
 
-	// invisible bodies to constrict paddles
+	// 패들을 제한하는 보이지 않는 바디
 	function stopper(x, y, side, position) {
-		// determine which paddle composite to interact with
 		let attracteeLabel = (side === 'left') ? 'paddleLeftComp' : 'paddleRightComp';
 
 		return Matter.Bodies.circle(x, y, 40, {
@@ -417,16 +423,25 @@
 			},
 			plugin: {
 				attractors: [
-					// stopper is always a, other body is b
 					function(a, b) {
 						if (b.label === attracteeLabel) {
 							let isPaddleUp = (side === 'left') ? isLeftPaddleUp : isRightPaddleUp;
-							let isPullingUp = (position === 'up' && isPaddleUp);
-							let isPullingDown = (position === 'down' && !isPaddleUp);
-							if (isPullingUp || isPullingDown) {
+							let isPullingUp = ('pull' in position) ? position.pull === 'up' : false;
+							let isPullingDown = ('pull' in position) ? position.pull === 'down' : false;
+
+							// 패들이 위로 끌리는 경우
+							if (isPaddleUp && isPullingUp) {
 								return {
 									x: (a.position.x - b.position.x) * PADDLE_PULL,
-									y: (a.position.y - b.position.y) * PADDLE_PULL,
+									y: (a.position.y - b.position.y) * PADDLE_PULL
+								};
+							}
+
+							// 패들이 아래로 끌리는 경우
+							if (!isPaddleUp && isPullingDown) {
+								return {
+									x: (b.position.x - a.position.x) * PADDLE_PULL,
+									y: (b.position.y - a.position.y) * PADDLE_PULL
 								};
 							}
 						}
@@ -436,16 +451,8 @@
 		});
 	}
 
-	// contact with these bodies causes pinball to be relaunched
-	function reset(x, width) {
-		return Matter.Bodies.rectangle(x, 781, width, 2, {
-			label: 'reset',
-			isStatic: true,
-			render: {
-				fillStyle: '#fff'
-			}
-		});
-	}
-
-	window.addEventListener('load', load, false);
+	// 게임 로드
+	$(document).ready(function() {
+		load();
+	});
 })();
