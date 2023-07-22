@@ -422,26 +422,17 @@
 				group: stopperGroup
 			},
 			plugin: {
+				// stopper is always a, other body is b
 				attractors: [
 					function(a, b) {
 						if (b.label === attracteeLabel) {
 							let isPaddleUp = (side === 'left') ? isLeftPaddleUp : isRightPaddleUp;
-							let isPullingUp = ('pull' in position) ? position.pull === 'up' : false;
-							let isPullingDown = ('pull' in position) ? position.pull === 'down' : false;
-
-							// 패들이 위로 끌리는 경우
-							if (isPaddleUp && isPullingUp) {
+							let isPullingUp = (position === 'up' && isPaddleUp);
+							let isPullingDown = (position === 'down' && !isPaddleUp);
+							if (isPullingUp || isPullingDown) {
 								return {
 									x: (a.position.x - b.position.x) * PADDLE_PULL,
-									y: (a.position.y - b.position.y) * PADDLE_PULL
-								};
-							}
-
-							// 패들이 아래로 끌리는 경우
-							if (!isPaddleUp && isPullingDown) {
-								return {
-									x: (b.position.x - a.position.x) * PADDLE_PULL,
-									y: (b.position.y - a.position.y) * PADDLE_PULL
+									y: (a.position.y - b.position.y) * PADDLE_PULL,
 								};
 							}
 						}
@@ -451,8 +442,16 @@
 		});
 	}
 
-	// 게임 로드
-	$(document).ready(function() {
-		load();
-	});
+	// contact with these bodies causes pinball to be relaunched
+	function reset(x, width) {
+		return Matter.Bodies.rectangle(x, 781, width, 2, {
+			label: 'reset',
+			isStatic: true,
+			render: {
+				fillStyle: '#fff'
+			}
+		});
+	}
+
+	window.addEventListener('load', load, false);
 })();
