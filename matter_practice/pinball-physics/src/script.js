@@ -1,8 +1,8 @@
 (() => {
-	// plugins
-	Matter.use(MatterAttractors);
+   // Matter.js에서 사용할 플러그인을 설정합니다.
+	 Matter.use(MatterAttractors);
 
-	// constants
+	 // 게임에서 사용할 상수들을 정의합니다. 이들은 게임의 각 구성 요소의 형상과 색상을 나타냅니다.
 	const PATHS = {
 		DOME: '0 0 0 250 19 250 20 231.9 25.7 196.1 36.9 161.7 53.3 129.5 74.6 100.2 100.2 74.6 129.5 53.3 161.7 36.9 196.1 25.7 231.9 20 268.1 20 303.9 25.7 338.3 36.9 370.5 53.3 399.8 74.6 425.4 100.2 446.7 129.5 463.1 161.7 474.3 196.1 480 231.9 480 250 500 250 500 0 0 0',
 		DROP_LEFT: '0 0 20 0 70 100 20 150 0 150 0 0',
@@ -10,37 +10,40 @@
 		APRON_LEFT: '0 0 180 120 0 120 0 0',
 		APRON_RIGHT: '180 0 180 120 0 120 180 0'
 	};
-	const COLOR = {
-		BACKGROUND: '#212529',
-		OUTER: '#495057',
-		INNER: '#15aabf',
-		BUMPER: '#fab005',
-		BUMPER_LIT: '#fff3bf',
-		PADDLE: '#e64980',
-		PINBALL: '#dee2e6'
-	};
-	const GRAVITY = 0.75;
-	const WIREFRAMES = false;
-	const BUMPER_BOUNCE = 1.5;
-	const PADDLE_PULL = 0.002;
-	const MAX_VELOCITY = 50;
 
-	// score elements
+	const COLOR = {
+		BACKGROUND: '#212529', // 배경색
+		OUTER: '#495057', // 외부 색상
+		INNER: '#15aabf', // 내부 색상
+		BUMPER: '#fab005', // 범퍼 색상
+		BUMPER_LIT: '#fff3bf', // 켜진 범퍼 색상
+		PADDLE: '#e64980', // 패들 색상
+		PINBALL: '#dee2e6' // 핀볼 색상
+	};
+
+	const GRAVITY = 0.75; // 게임에서 사용할 중력 상수
+	const WIREFRAMES = false; // 와이어프레임 모드를 사용할지 여부를 결정하는 상수
+	const BUMPER_BOUNCE = 1.5; // 범퍼의 반발력을 결정하는 상수
+	const PADDLE_PULL = 0.002; // 패들이 풀링되는 정도를 결정하는 상수
+	const MAX_VELOCITY = 50; // 게임에서 허용되는 최대 속도
+
+	// 점수를 표시할 HTML 엘리먼트를 선택합니다.
 	let $currentScore = $('.current-score span');
 	let $highScore = $('.high-score span');
 
-	// shared variables
+	// 게임에서 사용할 변수들을 정의합니다.
 	let currentScore, highScore;
 	let engine, world, render, pinball, stopperGroup;
 	let leftPaddle, leftUpStopper, leftDownStopper, isLeftPaddleUp;
 	let rightPaddle, rightUpStopper, rightDownStopper, isRightPaddleUp;
 
+	// 게임을 로드하고 초기화하는 함수입니다.
 	function load() {
-		init();
-		createStaticBodies();
-		createPaddles();
-		createPinball();
-		createEvents();
+			init();
+			createStaticBodies();
+			createPaddles();
+			createPinball();
+			createEvents();
 	}
 
 	// 게임 초기화 함수
@@ -54,7 +57,7 @@
 			min: { x: 0, y: 0},
 			max: { x: 500, y: 800 }
 		};
-		world.gravity.y = GRAVITY; // 경사진 테이블에서 공을 굴리기 위한 중력 설정
+		world.gravity.y = GRAVITY; // 중력을 설정합니다.
 
 		// Matter.js 렌더러 생성
 		render = Matter.Render.create({
@@ -76,7 +79,7 @@
 		// 충돌 필터링을 위한 그룹 설정
 		stopperGroup = Matter.Body.nextGroup(true);
 
-		// 초기 점수 설정
+		// 점수와 패들 상태를 초기화합니다.
 		currentScore = 0;
 		highScore = 0;
 		isLeftPaddleUp = false;
@@ -442,7 +445,8 @@
 		});
 	}
 
-	// contact with these bodies causes pinball to be relaunched
+	
+	// 핀볼을 다시 발사하게 하는 바디를 생성하는 함수입니다.
 	function reset(x, width) {
 		return Matter.Bodies.rectangle(x, 781, width, 2, {
 			label: 'reset',
@@ -453,5 +457,6 @@
 		});
 	}
 
+	// 페이지 로드시 load함수 실행
 	window.addEventListener('load', load, false);
 })();
